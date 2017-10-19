@@ -24,10 +24,10 @@
 
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Map as ImmutableMap, Set as ImmutableSet} from 'immutable';
-import {getCorrectEventName} from '@material/animation';
-import {MDCPersistentDrawerFoundation, MDCPersistentDrawer} from '@material/drawer/persistent';
+import {Set as ImmutableSet} from 'immutable';
+import {MDCPersistentDrawerFoundation, MDCPersistentDrawer} from '@material/drawer';
 
+import '@material/list/dist/mdc.list.min.css'
 import '@material/drawer/dist/mdc.drawer.min.css';
 
 function getMatchesProperty(HTMLElementPrototype) {
@@ -36,33 +36,19 @@ function getMatchesProperty(HTMLElementPrototype) {
     ].filter((p) => p in HTMLElementPrototype).pop();
 }
 
-const {ANIM_END_EVENT_NAME} = MDCPersistentDrawerFoundation.strings;
-
-const MATCHES = getMatchesProperty(HTMLElement.prototype);
-
 class Drawer extends PureComponent {
     static propTypes = {
         id: PropTypes.string,
-        labelId: PropTypes.string,
-        checked: PropTypes.bool,
-        disabled: PropTypes.bool,
-        indeterminate: PropTypes.bool,
-        onChange: PropTypes.func
+        open: PropTypes.bool,
     };
 
     static defaultProps = {
-        checked: false,
-        disabled: false,
-        indeterminate: false,
-        onChange: () => {
-        }
+        open: true,
     };
 
     state = {
         classes: new ImmutableSet(),
-        checkedInternal: this.props.checked,
-        disabledInternal: this.props.disabled,
-        indeterminateInternal: this.props.indeterminate
+        open: this.props.open
     };
 
     // Here we initialize a foundation class, passing it an adapter which tells it how to
@@ -74,100 +60,58 @@ class Drawer extends PureComponent {
         removeClass: className => this.setState(prevState => ({
             classes: prevState.classes.remove(className)
         })),
-        registerAnimationEndHandler: handler => {
-            if (this.refs.root) {
-                this.refs.root.addEventListener(getCorrectEventName(window, 'animationend'), handler);
-            }
-        },
-        deregisterAnimationEndHandler: handler => {
-            if (this.refs.root) {
-                this.refs.root.removeEventListener(getCorrectEventName(window, 'animationend'), handler)
-            }
-        },
-        registerChangeHandler: handler => {
-            // Note that this could also be handled outside of using the native DOM API.
-            // For example, onChange within render could delegate to a function which calls
-            // the handler passed here, as well as performs the other business logic. The point
-            // being our foundations are designed to be adaptable enough to fit the needs of the host
-            // platform.
-            if (this.refs.nativeCb) {
-                this.refs.nativeCb.addEventListener('change', handler);
-            }
-        },
-        deregisterChangeHandler: handler => {
-            if (this.refs.nativeCb) {
-                this.refs.nativeCb.removeEventListener('change', handler);
-            }
-        },
-        getNativeControl: () => {
-            if (!this.refs.nativeCb) {
-                throw new Error('Invalid state for operation');
-            }
-            return this.refs.nativeCb;
-        },
+        hasClass: className => true,
+        hasNecessaryDom: () => {return true},
         forceLayout: () => {
-            if (this.refs.nativeCb) {
-                this.refs.nativeCb.offsetWidth;
+            if (this.refs.root) {
+                this.refs.root.offsetWidth;
             }
         },
-        isAttachedToDOM: () => Boolean(this.refs.nativeCb),
-        attachTo: () => setState()
+        isAttachedToDOM: () => Boolean(this.refs.root),
     });
 
-
-
-    changeHandler(evt) {
-        this.props.onChange(evt);
+    render() {
+        // Within render, we generate the html needed to render a proper MDC-Web drawer.
+        return (
+            <nav ref="root" className={`mdc-persistent-drawer mdc-typography ${this.state.classes.toJS().join(' ')}`}>
+                <div className="mdc-permanent-drawer__toolbar-spacer"/>
+                <div className="mdc-permanent-drawer__content">
+                    <nav id="icon-with-text-demo" className="mdc-list">
+                        <a className="mdc-list-item mdc-permanent-drawer--selected" href="#">
+                            <i className="material-icons mdc-list-item__start-detail" aria-hidden="true">inbox</i>Inbox
+                        </a>
+                        <a className="mdc-list-item" href="#">
+                            <i className="material-icons mdc-list-item__start-detail" aria-hidden="true">star</i>Star
+                        </a>
+                    </nav>
+                </div>
+            </nav>
+        );
     }
-
-    // render() {
-    //     // Within render, we generate the html needed to render a proper MDC-Web drawer.
-    //     return (
-    //
-    //     );
-    // }
 
     // Within the two component lifecycle methods below, we invoke the foundation's lifecycle hooks
     // so that proper work can be performed.
     componentDidMount() {
-
-
+        // this.ROOT = this.refs.root;
+        // let drawer = new MDCPersistentDrawer(document.querySelector('.mdc-persistent-drawer'));
         this.foundation.init();
-        this.rippleFoundation.init();
+
     }
 
     componentWillUnmount() {
-        this.rippleFoundation.destroy();
         this.foundation.destroy();
     }
 
     // Here we synchronize the internal state of the UI component based on what the user has specified.
     componentWillReceiveProps(props) {
-        let drawer = new MDCPersistentDrawer(document.querySelector('.mdc-persistent-drawer'));
-        if (props.checked !== this.props.checked) {
-            this.setState({checkedInternal: props.checked, indeterminateInternal: false});
-        }
-        if (props.indeterminate !== this.props.indeterminate) {
-            this.setState({indeterminateInternal: props.indeterminate});
-        }
-        if (props.disabled !== this.props.disabled) {
-            this.setState({disabledInternal: props.disabled});
-        }
+
+
     }
 
     // Since we cannot set an indeterminate attribute on a native checkbox, we use componentDidUpdate to update
     // the indeterminate value of the native checkbox whenever a change occurs (as opposed to doing so within
     // render()).
     componentDidUpdate() {
-        if (this.refs.nativeCb) {
-            this.refs.nativeCb.indeterminate = this.state.indeterminateInternal;
-        }
-        // To make the ripple animation work we update the css properties after React finished building the DOM.
-        if (this.refs.root) {
-            this.state.rippleCss.forEach((v, k) => {
-                this.refs.root.style.setProperty(k, v);
-            });
-        }
     }
 }
 

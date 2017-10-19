@@ -1,23 +1,23 @@
 import React, {Component} from 'react';
 import './style.css';
-
-import List from "./AAAA";
+import Drawer from "./Drawer";
 
 class MaterialComponents extends Component {
     render() {
         return (
-            <List/>
-            // {/*<Checkbox id="checkbox1"/>*/}
+            <div>
+                <Drawer/>
+            </div>
         );
     }
-    componentDidMount(){
+
+    componentDidMount() {
         // let aaa =  document.getElementById('checkbox1').checked;
         // document.getElementById('checkbox1').checked = true;
         // Drawer.attachTo(document.getElementById('drawer'))
     };
 
 }
-
 
 
 // const checkbox = new Checkbox();
