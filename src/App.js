@@ -1,17 +1,20 @@
 import React, {Component} from 'react';
-import {BrowserRouter, Switch, Route} from 'react-router-dom'
+import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
 
-import Home from './home/index'
+import Home from './home'
 import NotFound from './notfound'
+
+import MaterialComponents from './material-components'
+
 
 class App extends Component {
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter name="root">
                 <Switch>
+                    <Redirect exact from="/" to='/material-components'/>
                     <Route exact path="/" component={Home}/>
-                    {/*<Route path="/about" component={About}/>*/}
-                    {/*<Route path="/:user" component={User}/>*/}
+                    <Route path="/material-components" component={MaterialComponents}/>
                     <Route component={NotFound}/>
                 </Switch>
             </BrowserRouter>
