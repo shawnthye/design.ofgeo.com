@@ -8,6 +8,8 @@
     "@material/drawer": "^0.5.9",
     "@material/list": "^0.23.0",
     "@material/ripple": "^0.23.0",
+    "@material/theme": "^0.4.0",
+    "@material/typography": "^0.3.0",
     "express": "^4.16.2",
     "immutable": "^3.8.2",
     "prop-types": "^15.6.0",

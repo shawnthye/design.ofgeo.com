@@ -1,3 +1,6 @@
+import '@material/theme/dist/mdc.theme.css'
+import '@material/typography/dist/mdc.typography.css'
+
 import React, {Component} from 'react';
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
 
@@ -10,10 +13,10 @@ import MaterialComponents from './material-components'
 class App extends Component {
     render() {
         return (
-            <BrowserRouter name="root">
-                <Switch>
-                    <Redirect exact from="/" to='/material-components'/>
-                    <Route exact path="/" component={Home}/>
+            <BrowserRouter>
+                <Switch >
+                    {/*<Redirect exact from="/" to='/material-components'/>*/}
+                    {/*<Route exact path="/" component={Home}/>*/}
                     <Route path="/material-components" component={MaterialComponents}/>
                     <Route component={NotFound}/>
                 </Switch>
