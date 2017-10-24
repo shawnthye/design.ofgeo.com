@@ -40,8 +40,7 @@ class PermanentDrawer extends PureComponent {
     };
 
     state = {
-        classes: new ImmutableSet(),
-        open: this.props.open
+        classes: new ImmutableSet()
     };
 
     // Here we initialize a foundation class, passing it an adapter which tells it how to
@@ -82,26 +81,7 @@ class PermanentDrawer extends PureComponent {
     render() {
         // Within render, we generate the html needed to render a proper MDC-Web drawer.
         return (
-            <nav className="mdc-permanent-drawer mdc-typography">
-                {/*{*/}
-                    {/*this.props.children.filter(child => {*/}
-                        {/*if (child.props.className.split(' ').includes('mdc-permanent-drawer__toolbar-spacer')) {*/}
-                            {/*return child;*/}
-                        {/*}*/}
-                    {/*}).map(child => child)*/}
-                {/*}*/}
-                {/*<div className="mdc-permanent-drawer__content">*/}
-
-                    {/*<nav id="icon-with-text-demo" className="mdc-list">*/}
-                        {/*{*/}
-                            {/*this.props.children.filter(child => {*/}
-                                {/*if (child.props.className.split(' ').includes('mdc-list-item')) {*/}
-                                    {/*return child;*/}
-                                {/*}*/}
-                            {/*}).map(child => child)*/}
-                        {/*}*/}
-                    {/*</nav>*/}
-                {/*</div>*/}
+            <nav className={`mdc-permanent-drawer mdc-typography ${this.state.classes.toJS().join(' ')}`}>
                 {this.props.children}
             </nav>
         );

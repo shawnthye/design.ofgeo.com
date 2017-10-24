@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
-import './style.css';
+import './NotFound.css';
 
 class NotFound extends Component {
     render() {
